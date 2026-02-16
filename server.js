@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const path = require("path");
 const express = require("express");
-const bcrypt = require("bcrypt");
+const connectDB = require("./config/database.js");
 const sessionConfig = require("./config/session");
 
 const requireAuth = require("./middleware/requireAuth.js");
@@ -26,6 +26,8 @@ app.get("/", requireAuth, (req, res) => {
   });
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
+  });
 });
