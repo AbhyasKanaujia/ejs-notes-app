@@ -1,0 +1,31 @@
+require("dotenv").config();
+
+const path = require("path");
+const express = require("express");
+const bcrypt = require("bcrypt");
+const sessionConfig = require("./config/session");
+
+const requireAuth = require("./middleware/requireAuth.js");
+const authRoutes = require("./routes/auth.routes.js");
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+app.use(express.urlencoded({ extended: true }));
+
+app.use(sessionConfig);
+app.use(authRoutes);
+
+app.get("/", requireAuth, (req, res) => {
+  res.render("index", {
+    name: "Abhyas",
+    message: "You are learning Express properly.",
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
