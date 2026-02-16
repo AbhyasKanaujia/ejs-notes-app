@@ -1,10 +1,4 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Express + EJS</title>
-  </head>
-  <body>
+<%- include('partials/header', {title: 'EJS Notes App'}) %>
     <h1>Hello <%= name %></h1>
     <p><%= message %></p>
-  </body>
-</html>
+<%- include('partials/footer') %>
