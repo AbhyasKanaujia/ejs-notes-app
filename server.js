@@ -7,6 +7,7 @@ const sessionConfig = require("./config/session");
 
 const requireAuth = require("./middleware/requireAuth.js");
 const authRoutes = require("./routes/auth.routes.js");
+const noteRoutes = require("./routes/note.routes.js");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -18,13 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(sessionConfig);
 app.use(authRoutes);
-
-app.get("/", requireAuth, (req, res) => {
-  res.render("index", {
-    name: "Abhyas",
-    message: "You are learning Express properly.",
-  });
-});
+app.use(noteRoutes);
 
 connectDB().then(() => {
   app.listen(PORT, () => {
