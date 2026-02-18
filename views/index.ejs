@@ -1,3 +1,20 @@
 <%- include('partials/header', {title: 'EJS Notes App'}) %>
-    <p><%= JSON.stringify(notes) %></p>
+<h2>My Notes</h2>
+<% if (notes.length === 0) { %>
+  <p>No notes found. <a href="/notes/new">Create your first note</a>.</p>
+<% } else { %>
+    <% notes.forEach(note => { %>
+      <div>
+          <h3><a href="/<%= note.id %>"><%= note.title %></a></h3>
+          <p><%= note.content.substring(0, 100) %>...</p>
+          <p>[<%= note.tags.join(', ') %>]</p>
+          <a href="/<%= note.id %>">View</a>
+          <a href="/<%= note.id %>/edit">Edit</a>
+          <a href="/<%= note.id %>/delete" onclick="return confirm('Are you sure you want to delete this note?');">Delete</a>
+          <a href="/<%= note.id %>/toggle-pin">
+            <%= note.isPinned ? 'Unpin' : 'Pin' %>
+          </a>
+      </div>
+    <% }) %>
+<% } %>
 <%- include('partials/footer') %>

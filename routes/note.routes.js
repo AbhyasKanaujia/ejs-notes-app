@@ -27,11 +27,17 @@ router.get("/new", (req, res) => {
 // POST create new note
 router.post("/", async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { title, content, tags } = req.body;
+    const isPinned =
+      typeof req.body.isPinned === "string"
+        ? req.body.isPinned === "on"
+        : Boolean(req.body.isPinned);
 
     const note = new Note({
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
+      tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
+      isPinned,
       userId: req.session.userId,
     });
 
@@ -82,13 +88,22 @@ router.get("/:id/edit", async (req, res) => {
 });
 
 // PUT update note
-router.put("/:id", async (req, res) => {
+router.post("/:id/edit", async (req, res) => {
   try {
-    const { title, content, tags, isPinned } = req.body;
+    const { title, content, tags } = req.body;
+    const isPinned =
+      typeof req.body.isPinned === "string"
+        ? req.body.isPinned === "on"
+        : Boolean(req.body.isPinned);
 
     const note = await Note.findOneAndUpdate(
       { _id: req.params.id, userId: req.session.userId },
-      { title, content, tags: tags ? tags.split(",") : [], isPinned },
+      {
+        title: title.trim(),
+        content: content.trim(),
+        tags: tags ? tags.split(",").map((tag) => tag.trim()) : [],
+        isPinned,
+      },
       { returnDocument: "after", runValidators: true },
     );
 
@@ -96,15 +111,35 @@ router.put("/:id", async (req, res) => {
       return res.send("Note not found");
     }
 
-    res.redirect(`/${note._id}`);
+    res.redirect(`/`);
   } catch (error) {
     console.error("Failed to update note: " + error.message);
     res.send("Failed to update note: " + error.message);
   }
 });
 
+router.get("/:id/toggle-pin", async (req, res) => {
+  try {
+    const note = await Note.findOne({
+      _id: req.params.id,
+      userId: req.session.userId,
+    });
+
+    if (!note) {
+      res.send("Note not found");
+    }
+
+    note.isPinned = !note.isPinned;
+    await note.save();
+    res.redirect("/");
+  } catch (error) {
+    console.error("Failed to toggle pin: " + error.message);
+    res.send("Faile to toggle pin: " + error.message);
+  }
+});
+
 // DELETE note
-router.delete("/:id", async (req, res) => {
+router.get("/:id/delete", async (req, res) => {
   try {
     const note = await Note.findOneAndDelete({
       _id: req.params.id,
