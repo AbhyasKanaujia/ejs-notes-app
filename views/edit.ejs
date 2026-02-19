@@ -1,56 +1,89 @@
-<%- include('partials/header', {title: 'EJS Notes App'}) %>
+<%- include('partials/header', { title: 'Edit Note' }) %>
 
-<div>
-  <div>
-    <h2>Edit <%= note.title %></h2>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card-body">
 
-    <form action="/<%= note.id %>/edit" method="POST">
-      <div>
-        <label for="title">Title</label>
-        <input 
-          type="text" 
-          id="title" 
-          name="title" 
-          value="<%= note.title %>"
-          placeholder="Enter note title"
-        />
+        <h3 class="mb-4 text-center">
+          Edit Note
+        </h3>
+
+        <form action="/<%= note.id %>/edit" method="POST">
+
+          <!-- Title -->
+          <div class="mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input 
+              type="text"
+              id="title"
+              name="title"
+              class="form-control"
+              value="<%= note.title %>"
+              placeholder="Enter note title"
+              required
+            />
+          </div>
+
+          <!-- Content -->
+          <div class="mb-3">
+            <label for="content" class="form-label">Content</label>
+            <textarea
+              id="content"
+              name="content"
+              rows="8"
+              class="form-control"
+              placeholder="Enter your note content here..."
+              required
+            ><%= note.content %></textarea>
+          </div>
+
+          <!-- Tags -->
+          <div class="mb-3">
+            <label for="tags" class="form-label">Tags</label>
+            <input 
+              type="text"
+              id="tags"
+              name="tags"
+              class="form-control"
+              value="<%= note.tags.join(', ') %>"
+              placeholder="e.g. work, important, todo"
+            />
+            <div class="form-text">
+              Separate tags with commas.
+            </div>
+          </div>
+
+          <!-- Pin Checkbox -->
+          <div class="form-check mb-4">
+            <input 
+              type="checkbox"
+              id="isPinned"
+              name="isPinned"
+              class="form-check-input"
+              <% if (note.isPinned) { %>checked<% } %>
+            />
+            <label for="isPinned" class="form-check-label">
+              Pin this note
+            </label>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between">
+            <a href="/<%= note.id %>" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+
+            <button type="submit" class="btn btn-primary">
+              Update Note
+            </button>
+          </div>
+
+        </form>
+
       </div>
-
-      <div>
-        <label for="content">Content</label>
-        <textarea 
-          id="content" 
-          name="content" 
-          rows="10"
-          placeholder="Enter your note content here..."
-        ><%= note.content %></textarea>
-      </div>
-
-      <div>
-        <label for="tags">Tags</label>
-        <input 
-          type="text" 
-          id="tags" 
-          name="tags" 
-          value="<%= note.tags.join(', ') %>"
-          placeholder="e.g., work, important, todo"
-        />
-      </div>
-
-      <div>
-        <label for="isPinned">
-          <input type="checkbox" id="isPinned" name="isPinned"  <% if (note.isPinned) { %>checked<% } %>
-          />
-          
-          Pin this note
-        </label>
-      </div>
-
-      <div>
-        <button type="submit">Update</button>
-        <a href="/notes">Cancel</a>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
+
 <%- include('partials/footer') %>
