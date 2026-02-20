@@ -21,8 +21,13 @@ app.use(sessionConfig);
 app.use(authRoutes);
 app.use(noteRoutes);
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+connectDB()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Database connection failed:", err);
+    process.exit(1);
   });
-});

@@ -1,4 +1,6 @@
 const express = require("express");
+const renderMarkdown = require("../utils/markdown");
+
 const Note = require("../models/Note.js");
 const requireAuth = require("../middleware/requireAuth.js");
 
@@ -60,6 +62,9 @@ router.get("/:id", async (req, res) => {
     if (!note) {
       return res.send("Note not found");
     }
+
+    note.content = renderMarkdown(note.content);
+    console.log(note.content);
 
     res.render("show", { note });
   } catch (error) {
